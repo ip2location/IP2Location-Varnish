@@ -1,0 +1,46 @@
+$Module ip2location 3 "Geolocate the data"
+
+$ABI vrt
+
+$Function VOID init_db(PRIV_VCL, STRING, STRING)
+
+$Function STRING country_short(PRIV_VCL, STRING)
+
+$Function STRING country_long(PRIV_VCL, STRING)
+
+$Function STRING region(PRIV_VCL, STRING)
+
+$Function STRING city(PRIV_VCL, STRING)
+
+$Function STRING isp(PRIV_VCL, STRING)
+
+$Function STRING latitude(PRIV_VCL, STRING)
+
+$Function STRING longitude(PRIV_VCL, STRING)
+
+$Function STRING domain(PRIV_VCL, STRING)
+
+$Function STRING zipcode(PRIV_VCL, STRING)
+
+$Function STRING timezone(PRIV_VCL, STRING)
+
+$Function STRING netspeed(PRIV_VCL, STRING)
+
+$Function STRING iddcode(PRIV_VCL, STRING)
+
+$Function STRING areacode(PRIV_VCL, STRING)
+
+$Function STRING weatherstationcode(PRIV_VCL, STRING)
+
+$Function STRING weatherstationname(PRIV_VCL, STRING)
+
+$Function STRING mcc(PRIV_VCL, STRING)
+
+$Function STRING mnc(PRIV_VCL, STRING)
+
+$Function STRING mobilebrand(PRIV_VCL, STRING)
+
+$Function STRING elevation(PRIV_VCL, STRING)
+
+$Function STRING usagetype(PRIV_VCL, STRING)
+

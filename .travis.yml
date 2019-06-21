@@ -1,0 +1,23 @@
+language: c
+
+before_install:
+  - sudo apt-get update -q
+  - curl -s https://packagecloud.io/install/repositories/varnishcache/varnish62/script.deb.sh | sudo bash
+  - sudo apt-get -q update
+  - sudo apt-get install varnish
+  - sudo apt-get install varnish-dev
+  - sudo git clone https://github.com/chrislim2888/IP2Location-C-Library.git
+  - cd IP2Location-C-Library
+  - autoreconf -i -v --force
+  - ./configure
+  - make
+  - make install
+
+before_script:
+  - ./autogen.sh
+  - ./configure --prefix=/usr
+  - make
+
+compiler:
+  - clang
+  - gcc
