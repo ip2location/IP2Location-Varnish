@@ -7,7 +7,7 @@
 | Version:        | 1.0.0       |
 | Manual section: | 3           |
 
-An Varnish module that enables the user to find the country, region, city, latitude, longitude, zip code, time zone, ISP, domain name, connection type, area code, weather, mobile network, elevation, usage type by IP address. The module reads the geo location information from **IP2Location BIN data** file. 
+An Varnish module that enables the website or server admins to find the country, region, city, latitude, longitude, zip code, time zone, ISP, domain name, connection type, area code, weather, mobile network, elevation, usage type by IP address. The module reads the geo location information from **IP2Location BIN data** file. 
 
 This module currently only support Varnish version 6.2.
 
