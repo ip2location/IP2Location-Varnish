@@ -4,7 +4,7 @@
 |-|-|
 | Author:         | IP2Location |
 | Date:           | 2019-06-21  |
-| Version:        | 1.0.0       |
+| Version:        | 1.0.1       |
 | Manual section: | 3           |
 
 An Varnish module that enables the website or server admins to find the country, region, city, latitude, longitude, zip code, time zone, ISP, domain name, connection type, area code, weather, mobile network, elevation, usage type by IP address. The module reads the geo location information from **IP2Location BIN data** file. 
