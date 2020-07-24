@@ -74,6 +74,7 @@ VPFX(init_db)(VRT_CTX, struct VPFX(priv) *priv, char *filename, char *memtype)
 	printf("The filename accepted is %s.\n", (char *) filename);	
 	
 	IP2Location *IP2LocationObj = IP2Location_open( (char *) filename);
+	priv->priv = IP2LocationObj;
 	// IP2Location_open_mem(priv->priv, IP2LOCATION_SHARED_MEMORY);
 	if (strcmp(memtype, "IP2LOCATION_FILE_IO") == 0) {
 		IP2Location_open_mem(priv->priv, IP2LOCATION_FILE_IO);
@@ -82,7 +83,7 @@ VPFX(init_db)(VRT_CTX, struct VPFX(priv) *priv, char *filename, char *memtype)
 	} else if (strcmp(memtype, "IP2LOCATION_SHARED_MEMORY") == 0) {
 		IP2Location_open_mem(priv->priv, IP2LOCATION_SHARED_MEMORY);
 	}
-	priv->priv = IP2LocationObj;
+
 	AN(priv->priv);
 	priv->free = i2pl_free;
 }
