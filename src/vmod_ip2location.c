@@ -12,6 +12,11 @@
 #include <unistd.h>
 #include <pthread.h>
 
+#ifdef __FreeBSD__
+#include <stdio.h>
+#define gcvt(v, d, c) sprintf(c, "%*g", d, v);
+#endif
+
 #include "cache/cache.h"
 
 /* Varnish < 6.2 compat */
