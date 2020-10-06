@@ -18,10 +18,10 @@ Required [IP2Location C Library](https://github.com/chrislim2888/IP2Location-C-L
 Before install and use this module, you have to install:
 
 - IP2Location C Library. You can get IP2Location C Library from <https://github.com/chrislim2888/IP2Location-C-Library> 
-- varnishapi (varnish-dev) package. install varnishapi package by running this command:
+- libvarnishapi-dev and python-docutils package. Install the package using following command:
 
 ```bash
-apt-get install varnish-dev
+apt-get install libvarnishapi-dev python-docutils
 ```
 
 - autoconf, libtool and make. Those packages will be needed during compilation and installation process.
