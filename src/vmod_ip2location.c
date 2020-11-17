@@ -1,8 +1,3 @@
-/**
- * Under testing...
- * Things to do:
-*/
-
 #include <stdlib.h>
 #include <string.h>
 #include <IP2Location.h>
@@ -21,12 +16,12 @@
 
 /* Varnish < 6.2 compat */
 #ifndef VPFX
-#  define VPFX(a) vmod_ ## a
-#  define VARGS(a) vmod_ ## a ## _arg
-#  define VENUM(a) vmod_enum_ ## a
-#  define VEVENT(a) a
+#	define VPFX(a) vmod_ ## a
+#	define VARGS(a) vmod_ ## a ## _arg
+#	define VENUM(a) vmod_enum_ ## a
+#	define VEVENT(a) a
 #else
-#  define VEVENT(a) VPFX(a)
+#	define VEVENT(a) VPFX(a)
 #endif
 
 #ifndef VRT_H_INCLUDED
@@ -34,88 +29,95 @@
 #endif
 
 /* Defined options for querying IP2Location data */
-#define query_COUNTRY_SHORT       1
-#define query_COUNTRY_LONG        2
-#define query_REGION              3
-#define query_CITY                4
-#define query_ISP                 5
-#define query_LATITUDE            6
-#define query_LONGITUDE           7
-#define query_DOMAIN              8
-#define query_ZIPCODE             9
-#define query_TIMEZONE           10
-#define query_NETSPEED           11
-#define query_IDDCODE            12
-#define query_AREACODE           13
-#define query_WEATHERSTATIONCODE 14
-#define query_WEATHERSTATIONNAME 15
-#define query_MCC                16
-#define query_MNC                17
-#define query_MOBILEBRAND        18
-#define query_ELEVATION          19
-#define query_USAGETYPE          20
+#define query_COUNTRY_SHORT			1
+#define query_COUNTRY_LONG			2
+#define query_REGION				3
+#define query_CITY					4
+#define query_ISP					5
+#define query_LATITUDE				6
+#define query_LONGITUDE				7
+#define query_DOMAIN				8
+#define query_ZIPCODE				9
+#define query_TIMEZONE				10
+#define query_NETSPEED				11
+#define query_IDDCODE				12
+#define query_AREACODE				13
+#define query_WEATHERSTATIONCODE	14
+#define query_WEATHERSTATIONNAME	15
+#define query_MCC					16
+#define query_MNC					17
+#define query_MOBILEBRAND			18
+#define query_ELEVATION				19
+#define query_USAGETYPE				20
 
 typedef struct vmod_ip2location_data {
-  time_t		ip2l_db_ts;     /* timestamp of the database file */
-  IP2Location		*ip2l_handle;
-  pthread_mutex_t	lock;
+	time_t			ip2l_db_ts;	 /* timestamp of the database file */
+	IP2Location		*ip2l_handle;
+	pthread_mutex_t	lock;
 } ip2location_data_t;
 
 void
 i2pl_free(void *d)
 {
-  ip2location_data_t *data = d;
+	ip2location_data_t *data = d;
 
-    if (data->ip2l_handle != NULL) {
-        IP2Location_close(data->ip2l_handle);
-    }
+	if (data->ip2l_handle != NULL) {
+		IP2Location_close(data->ip2l_handle);
+	}
 }
 
 VCL_VOID
 VPFX(init_db)(VRT_CTX, struct VPFX(priv) *priv, char *filename, char *memtype)
 {
-
 	CHECK_OBJ_NOTNULL(ctx, VRT_CTX_MAGIC);
-	printf("The filename accepted is %s.\n", (char *) filename);	
-	
-	IP2Location *IP2LocationObj = IP2Location_open( (char *) filename);
-	priv->priv = IP2LocationObj;
-	// IP2Location_open_mem(priv->priv, IP2LOCATION_SHARED_MEMORY);
-	if (strcmp(memtype, "IP2LOCATION_FILE_IO") == 0) {
-		IP2Location_open_mem(priv->priv, IP2LOCATION_FILE_IO);
-	} else if (strcmp(memtype, "IP2LOCATION_CACHE_MEMORY") == 0) {
-		IP2Location_open_mem(priv->priv, IP2LOCATION_CACHE_MEMORY);
-	} else if (strcmp(memtype, "IP2LOCATION_SHARED_MEMORY") == 0) {
-		IP2Location_open_mem(priv->priv, IP2LOCATION_SHARED_MEMORY);
-	}
 
-	AN(priv->priv);
-	priv->free = i2pl_free;
+	if (priv->priv == NULL) {
+		IP2Location *IP2LocationObj = IP2Location_open((char *) filename);
+
+		if (IP2LocationObj == NULL) {
+			printf("Not able to load IP2Location Database \"%s\".\n", (char *) filename);
+
+			exit(0);
+		}
+
+		printf("IP2Location Database %s is loaded.\n", (char *) filename);
+
+		priv->priv = IP2LocationObj;
+
+		if (strcmp(memtype, "IP2LOCATION_FILE_IO") == 0) {
+			IP2Location_set_lookup_mode(priv->priv, IP2LOCATION_FILE_IO);
+		} else if (strcmp(memtype, "IP2LOCATION_CACHE_MEMORY") == 0) {
+			IP2Location_set_lookup_mode(priv->priv, IP2LOCATION_CACHE_MEMORY);
+		} else if (strcmp(memtype, "IP2LOCATION_SHARED_MEMORY") == 0) {
+			IP2Location_set_lookup_mode(priv->priv, IP2LOCATION_SHARED_MEMORY);
+		}
+
+		AN(priv->priv);
+		priv->free = i2pl_free;
+	}
 }
 
 // Use this function to query result, and then extract the field based on user selection
 void *
 query_all(VRT_CTX, struct VPFX(priv) *priv, char * ip, int option)
 {
-    IP2LocationRecord *r;
-    IP2Location *handle;
-    char *result = NULL;
+	IP2LocationRecord *r;
+	IP2Location *handle;
+	char *result = NULL;
 	
 	char longitude[10];
 	char latitude[10];
 	char elevation[10];
-	
-	char *ip1 = (char *) ip;
-	
-	// printf("The IP address accepted is %s.\n", ip1);
+
+	printf("The client IP is %s.\n", (char *) ip);
 	
 	CHECK_OBJ_NOTNULL(ctx, VRT_CTX_MAGIC);
 
-    if (priv->priv != NULL) {
+	if (priv->priv != NULL) {
 		handle = priv->priv;
-        r = IP2Location_get_all(handle, ip1);
+		r = IP2Location_get_all(handle, (char *) ip);
 
-        if (r != NULL) {
+		if (r != NULL) {
 			switch (option) {
 				case query_COUNTRY_SHORT:
 					result = WS_Copy(ctx->ws, r->country_short, -1);
@@ -184,15 +186,16 @@ query_all(VRT_CTX, struct VPFX(priv) *priv, char * ip, int option)
 					result = WS_Copy(ctx->ws, "-", -1);
 					break;
 			}
-            IP2Location_free_record(r);
 
-            return (result);
-        }
-    }
+			IP2Location_free_record(r);
 
-    // VMOD_LOG("ERROR: IP2Location database failed to load");
+			return (result);
+		}
+	}
 
-    return WS_Copy(ctx->ws, "-", -1);
+	// VMOD_LOG("ERROR: IP2Location database failed to load");
+
+	return WS_Copy(ctx->ws, "????", -1);
 }
 
 VCL_STRING
@@ -354,4 +357,3 @@ VPFX(usagetype)(VRT_CTX, struct VPFX(priv) *priv, char * ip)
 	result = query_all(ctx, priv, ip, query_USAGETYPE);
 	return (result);
 }
-

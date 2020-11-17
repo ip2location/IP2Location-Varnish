@@ -3,28 +3,32 @@
 | | |
 |-|-|
 | Author:         | IP2Location |
-| Date:           | 2019-06-21  |
-| Version:        | 1.0.2       |
+| Date:           | 2020-11-17 |
+| Version:        | 1.0.3      |
 | Manual section: | 3           |
 
 An Varnish module that enables the website or server admins to find the country, region, city, latitude, longitude, zip code, time zone, ISP, domain name, connection type, area code, weather, mobile network, elevation, usage type by IP address. The module reads the geo location information from **IP2Location BIN data** file. 
 
-This module currently only support Varnish version 6.2.
+This module currently only support Varnish version 6.5.
 
 Required [IP2Location C Library](https://github.com/chrislim2888/IP2Location-C-Library) to work.
+
+
 
 # Installation
 
 Before install and use this module, you have to install:
 
 - IP2Location C Library. You can get IP2Location C Library from <https://github.com/chrislim2888/IP2Location-C-Library> 
-- libvarnishapi-dev and python-docutils package. Install the package using following command:
 
-```bash
-apt-get install libvarnishapi-dev python-docutils
-```
+- libvarnishapi-dev and python-docutils package. Install the require packages using following command:
 
-- autoconf, libtool and make. Those packages will be needed during compilation and installation process.
+  ```bash
+  apt-get install -y libvarnishapi-dev python-docutils autoconf libtool make
+  ```
+
+  
+
 - And of course, the **Varnish**.
 
 Then, clone this repo into your local, and run following commands to install:
@@ -36,26 +40,58 @@ make
 make install
 ```
 
+
+
 # Usage
 
-First, import this module like this:
+1. Import the IP2Location VMod in `default.vcl`.
 
-```c
-import ip2location;
+   ```
+   import ip2location;
+   ```
+
+   
+
+2. Initialize and load the database you downloaded from IP2Location like this:
+
+   ```c
+   sub vcl_init {
+   	ip2location.init_db("/usr/share/ip2location/DB1.BIN", "IP2LOCATION_FILE_IO");
+   }
+   ```
+
+
+
+### Custom Headers
+
+To use custom headers in the backed, add the following context.
+
+```
+sub vcl_recv {
+    set req.http.X-Country-Code = ip2location.country_short(client.ip);
+	set req.http.X-Region = ip2location.region(client.ip);
+}
 ```
 
-After that, initialize and load the database you downloaded from IP2Location like this:
 
-```c
-ip2location.init_db("path_to_database", "IP2LOCATION_FILE_IO");
+
+### Block Countries
+
+To block visitors from some countries to access your website, you may use the example below.
+
+```
+sub vcl_recv {
+    set req.http.X-Country-Code = ip2location.country_short(client.ip);
+    
+    if (req.http.X-Country-Code ~ "(CN|RU)" ) {
+    	return (synth(403, "Forbidden"));
+    }
+}
 ```
 
-Finally, called our module functions with IP address. For example:
 
-```c
-set req.http.X-Country-Code = ip2location.country_short("client.ip");
-set req.http.X-Region = ip2location.region("client.ip");
-```
+
+
 
 # Functions
 
@@ -68,7 +104,7 @@ Initialize and load database. The first argument indicates the path of the datab
 #### Example
 
 ```c
-ip2location.init_db("path_to_database", "IP2LOCATION_FILE_IO");
+ip2location.init_db("PATH_TO_IP2LOCATION_BIN_DATABASE", "IP2LOCATION_FILE_IO");
 ```
 
 ### country\_short
@@ -78,7 +114,7 @@ Returns two-letter country code based on ISO 3166.
 #### Example
 
 ```c
-set req.http.X-Country-Code = ip2location.country_short("client.ip");
+set req.http.X-Country-Code = ip2location.country_short(cleipt.ip);
 ```
 
 ### country\_long
@@ -88,7 +124,7 @@ Returns country name based on ISO 3166.
 #### Example
 
 ```c
-set req.http.X-Country-Name = ip2location.country_long("client.ip");
+set req.http.X-Country-Name = ip2location.country_long(cleipt.ip);
 ```
 
 ### region 
@@ -98,7 +134,7 @@ Returns region or state name.
 #### Example
 
 ```c
-set req.http.X-Region = ip2location.region("client.ip");
+set req.http.X-Region = ip2location.region(cleipt.ip);
 ```
 
 ### city 
@@ -108,7 +144,7 @@ Returns city name.
 #### Example
 
 ```c
-set req.http.X-City = ip2location.city("client.ip");
+set req.http.X-City = ip2location.city(cleipt.ip);
 ```
 
 ### isp 
@@ -118,7 +154,7 @@ Returns Internet Service Provider or company's name of the IP Address.
 #### Example
 
 ```c
-set req.http.X-ISP = ip2location.isp("client.ip");
+set req.http.X-ISP = ip2location.isp(cleipt.ip);
 ```
 
 ### latitude 
@@ -128,7 +164,7 @@ Returns latitude of the IP Address.
 #### Example
 
 ```c
-set req.http.X-Latitude = ip2location.latitude("client.ip");
+set req.http.X-Latitude = ip2location.latitude(cleipt.ip);
 ```
 
 ### longitude 
@@ -138,7 +174,7 @@ Returns longitude of the IP Address.
 #### Example
 
 ```c
-set req.http.X-Longitude = ip2location.longitude("client.ip");
+set req.http.X-Longitude = ip2location.longitude(cleipt.ip);
 ```
 
 ### domain 
@@ -148,7 +184,7 @@ set req.http.X-Longitude = ip2location.longitude("client.ip");
 #### Example
 
 ```c
-set req.http.X-Domain = ip2location.domain("client.ip");
+set req.http.X-Domain = ip2location.domain(cleipt.ip);
 ```
 
 ### zipcode 
@@ -158,7 +194,7 @@ Returns ZIP/Postal code.
 #### Example
 
 ```c
-set req.http.X-Zipcode = ip2location.zipcode("client.ip");
+set req.http.X-Zipcode = ip2location.zipcode(cleipt.ip);
 ```
 
 ### timezone 
@@ -168,7 +204,7 @@ Returns UTC time zone (with DST supported).
 #### Example
 
 ```c
-set req.http.X-Timezone = ip2location.timezone("client.ip");
+set req.http.X-Timezone = ip2location.timezone(cleipt.ip);
 ```
 
 ### netspeed 
@@ -178,7 +214,7 @@ Returns Internet connection type.
 #### Example
 
 ```c
-set req.http.X-Netspeed = ip2location.netspeed("client.ip");
+set req.http.X-Netspeed = ip2location.netspeed(cleipt.ip);
 ```
 
 ### iddcode 
@@ -188,7 +224,7 @@ Returns IDD prefix.
 #### Example
 
 ```c
-set req.http.X-Iddcode = ip2location.iddcode("client.ip");
+set req.http.X-Iddcode = ip2location.iddcode(cleipt.ip);
 ```
 
 ### areacode 
@@ -198,7 +234,7 @@ Returns Area Code of the IP Address.
 #### Example
 
 ```c
-set req.http.X-Areacode = ip2location.areacode("client.ip");
+set req.http.X-Areacode = ip2location.areacode(cleipt.ip);
 ```
 
 ### weatherstationcode 
@@ -208,7 +244,7 @@ Returns code to identify the nearest weather observation station
 #### Example
 
 ```c
-set req.http.X-Weatherstationcode = ip2location.weatherstationcode("client.ip");
+set req.http.X-Weatherstationcode = ip2location.weatherstationcode(cleipt.ip);
 ```
 
 ### weatherstationname 
@@ -218,7 +254,7 @@ Returns  name of the nearest weather observation st#### Example
 #### Example
 
 ```c
-set req.http.X-Weatherstationname = ip2location.weatherstationname("client.ip");
+set req.http.X-Weatherstationname = ip2location.weatherstationname(cleipt.ip);
 ```
 
 ### mcc 
@@ -228,7 +264,7 @@ Returns Mobile Country #### ExampleMCC).
 #### Example
 
 ```c
-set req.http.X-MCC = ip2location.mcc("client.ip");
+set req.http.X-MCC = ip2location.mcc(cleipt.ip);
 ```
 
 ### mnc 
@@ -238,7 +274,7 @@ Returns Mobile Ne#### Exampleode (MNC).
 #### Example
 
 ```c
-set req.http.X-MNC = ip2location.mnc("client.ip");
+set req.http.X-MNC = ip2location.mnc(cleipt.ip);
 ```
 
 ### mobilebrand 
@@ -248,7 +284,7 @@ set req.http.X-MNC = ip2location.mnc("client.ip");
 #### Example
 
 ```c
-set req.http.X-Mobilebrand = ip2location.mobilebrand("client.ip");
+set req.http.X-Mobilebrand = ip2location.mobilebrand(cleipt.ip);
 ```
 
 ### elevation 
@@ -258,7 +294,7 @@ Return elevation in meters (m).
 #### Example
 
 ```c
-set req.http.X-Elevation = ip2location.elevation("client.ip");
+set req.http.X-Elevation = ip2location.elevation(cleipt.ip);
 ```
 
 ### usagetype 
@@ -268,7 +304,7 @@ set req.http.X-Elevation = ip2location.elevation("client.ip");
 #### Example
 
 ```c
-set req.http.X-Usagetype = ip2location.usagetype("client.ip");
+set req.http.X-Usagetype = ip2location.usagetype(cleipt.ip);
 ```
 
 
