@@ -14,64 +14,50 @@
 
 #include "cache/cache.h"
 
-/* Varnish < 6.2 compat */
-#ifndef VPFX
-#	define VPFX(a) vmod_ ## a
-#	define VEVENT(a) a
-#else
-#	define VEVENT(a) VPFX(a)
-#endif
-
 #ifndef VRT_H_INCLUDED
 #include "vrt.h"
 #endif
 
-typedef struct vmod_ip2location_data {
-	time_t			ip2l_db_ts;	 /* timestamp of the database file */
-	IP2Location		*ip2l_handle;
-	pthread_mutex_t	lock;
-} ip2location_data_t;
-
 void
-i2pl_free(void *d)
+i2pl_free(void *obj)
 {
-	ip2location_data_t *data = d;
-
-	if (data->ip2l_handle != NULL) {
-		IP2Location_close(data->ip2l_handle);
-	}
+	AN(obj);
+	IP2Location_close((IP2Location *)obj);
 }
 
 VCL_VOID
-VPFX(init_db)(VRT_CTX, struct VPFX(priv) *priv, char *filename, char *memtype)
+vmod_init_db(VRT_CTX, struct vmod_priv *priv, char *filename, char *memtype)
 {
+	enum IP2Location_lookup_mode mtype;
+
 	CHECK_OBJ_NOTNULL(ctx, VRT_CTX_MAGIC);
-
-	if (priv->priv != NULL)
-		return;
-
-	IP2Location *IP2LocationObj = IP2Location_open(filename);
-
-	if (IP2LocationObj == NULL) {
-		printf("Not able to load IP2Location Database \"%s\".\n", filename);
-
-		exit(0);
-	}
-
-	printf("IP2Location Database %s is loaded.\n", filename);
-
-	priv->priv = IP2LocationObj;
+	AN(memtype);
+	AN(priv);
 
 	if (strcmp(memtype, "IP2LOCATION_FILE_IO") == 0)
-		IP2Location_set_lookup_mode(priv->priv, IP2LOCATION_FILE_IO);
+		mtype = IP2LOCATION_FILE_IO;
 	else if (strcmp(memtype, "IP2LOCATION_CACHE_MEMORY") == 0)
-		IP2Location_set_lookup_mode(priv->priv, IP2LOCATION_CACHE_MEMORY);
+		mtype = IP2LOCATION_CACHE_MEMORY;
 	else if (strcmp(memtype, "IP2LOCATION_SHARED_MEMORY") == 0)
-		IP2Location_set_lookup_mode(priv->priv, IP2LOCATION_SHARED_MEMORY);
+		mtype = IP2LOCATION_SHARED_MEMORY;
+	else {
+		VRT_fail(ctx, "IP2Location: invalid memtype (%s)", memtype);
+		return;
+	}
 
-	AN(priv->priv);
+	if (priv->priv != NULL)
+		IP2Location_close((IP2Location *)priv->priv);;
+
+	IP2Location *IP2LocationObj = IP2Location_open(filename);
+	if (!IP2LocationObj) {
+		VRT_fail(ctx, "IP2Location: can't open database (%s)", filename);
+		return;
+	}
+
+	IP2Location_set_lookup_mode(IP2LocationObj, mtype);
+
+	priv->priv = IP2LocationObj;
 	priv->free = i2pl_free;
-	
 }
 
 // Use this function to query result, and then extract the field based on user selection
