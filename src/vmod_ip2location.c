@@ -77,62 +77,60 @@ query_all(VRT_CTX, struct vmod_priv *priv, char * ip)
 	return (IP2Location_get_all(handle, ip));
 }
 
-#define FUNC(lower)						\
+static VCL_STRING
+copy(VRT_CTX, VCL_STRING s)
+{
+	VCL_STRING r = WS_Copy(ctx->ws, s, -1);
+
+	if (!r)
+		VRT_fail(ctx, "IP2Location: insufficient workspace");
+	return (r);
+}
+
+static VCL_STRING
+convert(VRT_CTX, float f)
+{
+	char buf[10];
+
+	gcvt(f, 5, buf);
+	return (copy(ctx, buf));
+}
+
+#define FUNC(name, render)						\
 	VCL_STRING 							\
-	vmod_ ## lower(VRT_CTX, struct vmod_priv *priv, char * ip)	\
+	vmod_ ## name(VRT_CTX, struct vmod_priv *priv, char * ip)	\
 	{								\
 		IP2LocationRecord *r;					\
-		char *result;						\
+		VCL_STRING result;					\
 									\
 		CHECK_OBJ_NOTNULL(ctx, VRT_CTX_MAGIC);			\
 									\
 		r = query_all(ctx, priv, ip); 				\
 		if (r == NULL)						\
 			return ("????");				\
-		result = WS_Copy(ctx->ws, r->lower, -1);		\
+		result = render(ctx, r->name);				\
 		IP2Location_free_record(r);				\
 		return (result);					\
 	}
 
-FUNC(country_short);
-FUNC(country_long );
-FUNC(region);
-FUNC(city);
-FUNC(isp);
-FUNC(domain);
-FUNC(zipcode);
-FUNC(timezone);
-FUNC(netspeed);
-FUNC(iddcode);
-FUNC(areacode);
-FUNC(weatherstationcode);
-FUNC(weatherstationname);
-FUNC(mcc);
-FUNC(mnc);
-FUNC(mobilebrand);
-FUNC(usagetype);
+FUNC(country_short,       copy);
+FUNC(country_long,        copy);
+FUNC(region,              copy);
+FUNC(city,                copy);
+FUNC(isp,                 copy);
+FUNC(domain,              copy);
+FUNC(zipcode,             copy);
+FUNC(timezone,            copy);
+FUNC(netspeed,            copy);
+FUNC(iddcode,             copy);
+FUNC(areacode,            copy);
+FUNC(weatherstationcode,  copy);
+FUNC(weatherstationname,  copy);
+FUNC(mcc,                 copy);
+FUNC(mnc,                 copy);
+FUNC(mobilebrand,         copy);
+FUNC(usagetype,           copy);
 
-/* same as FUNC, but with the gcvt() call */
-#define FUNC_GCVT(lower)						\
-	VCL_STRING 							\
-	vmod_ ## lower(VRT_CTX, struct vmod_priv *priv, char * ip)	\
-	{								\
-		IP2LocationRecord *r;					\
-		char *result;						\
-		char buf[10];						\
-									\
-		CHECK_OBJ_NOTNULL(ctx, VRT_CTX_MAGIC);			\
-									\
-		r = query_all(ctx, priv, ip); 				\
-		if (r == NULL)						\
-			return ("????");				\
-									\
-		gcvt(r->lower, 5, buf);					\
-		result = WS_Copy(ctx->ws, buf, -1);			\
-		IP2Location_free_record(r);				\
-		return (result);					\
-	}
-
-FUNC_GCVT(latitude);
-FUNC_GCVT(longitude);
-FUNC_GCVT(elevation);
+FUNC(latitude,            convert);
+FUNC(longitude,           convert);
+FUNC(elevation,           convert);
