@@ -60,8 +60,6 @@ query_all(VRT_CTX, struct vmod_priv *priv, char * ip)
 {
 	IP2Location *handle;
 
-	printf("The client IP is %s.\n", ip);
-	
 	CHECK_OBJ_NOTNULL(ctx, VRT_CTX_MAGIC);
 
 	if (priv->priv == NULL)
