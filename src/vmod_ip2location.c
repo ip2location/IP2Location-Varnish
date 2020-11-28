@@ -54,21 +54,6 @@ vmod_init_db(VRT_CTX, struct vmod_priv *priv, char *filename, char *memtype)
 	priv->free = i2pl_free;
 }
 
-// Use this function to query result, and then extract the field based on user selection
-IP2LocationRecord *
-query_all(VRT_CTX, struct vmod_priv *priv, char * ip)
-{
-	IP2Location *handle;
-
-	CHECK_OBJ_NOTNULL(ctx, VRT_CTX_MAGIC);
-
-	if (priv->priv == NULL)
-		return (NULL);
-
-	handle = priv->priv;
-	return (IP2Location_get_all(handle, ip));
-}
-
 static VCL_STRING
 copy(VRT_CTX, VCL_STRING s)
 {
@@ -93,11 +78,19 @@ convert(VRT_CTX, float f)
 	vmod_ ## name(VRT_CTX, struct vmod_priv *priv, char * ip)	\
 	{								\
 		IP2LocationRecord *r;					\
+		IP2Location *handle;					\
 		VCL_STRING result;					\
 									\
 		CHECK_OBJ_NOTNULL(ctx, VRT_CTX_MAGIC);			\
+		AN(priv);						\
 									\
-		r = query_all(ctx, priv, ip); 				\
+		handle = priv->priv;					\
+		if (!handle) {						\
+			VRT_fail(ctx, "IP2Location: uninitialized db");	\
+			return (NULL);					\
+		}							\
+									\
+		r = IP2Location_get_ ## name(handle, ip); 		\
 		if (r == NULL)						\
 			return ("????");				\
 		result = render(ctx, r->name);				\
