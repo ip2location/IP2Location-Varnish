@@ -2,7 +2,6 @@
 #include <stdio.h>
 #define gcvt(v, d, c) sprintf(c, "%*g", d, v);
 #endif
-#include <stdlib.h>
 #include <string.h>
 
 #include <IP2Location.h>
