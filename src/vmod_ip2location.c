@@ -113,89 +113,87 @@ query_all(VRT_CTX, struct VPFX(priv) *priv, char * ip, int option)
 	
 	CHECK_OBJ_NOTNULL(ctx, VRT_CTX_MAGIC);
 
-	if (priv->priv != NULL) {
-		handle = priv->priv;
-		r = IP2Location_get_all(handle, (char *) ip);
+	if (priv->priv == NULL)
+		return result;
 
-		if (r != NULL) {
-			switch (option) {
-				case query_COUNTRY_SHORT:
-					result = WS_Copy(ctx->ws, r->country_short, -1);
-					break;
-				case query_COUNTRY_LONG:
-					result = WS_Copy(ctx->ws, r->country_long, -1);
-					break;
-				case query_REGION:
-					result = WS_Copy(ctx->ws, r->region, -1);
-					break;
-				case query_CITY:
-					result = WS_Copy(ctx->ws, r->city, -1);
-					break;
-				case query_ISP:
-					result = WS_Copy(ctx->ws, r->isp, -1);
-					break;
-				case query_LATITUDE:
-					gcvt(r->latitude, 5, latitude); 
-					result = WS_Copy(ctx->ws, latitude, -1);
-					break;
-				case query_LONGITUDE:
-					gcvt(r->longitude, 5, longitude); 
-					result = WS_Copy(ctx->ws, longitude, -1);
-					break;
-				case query_DOMAIN:
-					result = WS_Copy(ctx->ws, r->domain, -1);
-					break;
-				case query_ZIPCODE:
-					result = WS_Copy(ctx->ws, r->zipcode, -1);
-					break;
-				case query_TIMEZONE:
-					result = WS_Copy(ctx->ws, r->timezone, -1);
-					break;
-				case query_NETSPEED:
-					result = WS_Copy(ctx->ws, r->netspeed, -1);
-					break;
-				case query_IDDCODE:
-					result = WS_Copy(ctx->ws, r->iddcode, -1);
-					break;
-				case query_AREACODE:
-					result = WS_Copy(ctx->ws, r->areacode, -1);
-					break;
-				case query_WEATHERSTATIONCODE:
-					result = WS_Copy(ctx->ws, r->weatherstationcode, -1);
-					break;
-				case query_WEATHERSTATIONNAME:
-					result = WS_Copy(ctx->ws, r->weatherstationname, -1);
-					break;
-				case query_MCC:
-					result = WS_Copy(ctx->ws, r->mcc, -1);
-					break;
-				case query_MNC:
-					result = WS_Copy(ctx->ws, r->mnc, -1);
-					break;
-				case query_MOBILEBRAND:
-					result = WS_Copy(ctx->ws, r->mobilebrand, -1);
-					break;
-				case query_ELEVATION:
-					gcvt(r->elevation, 5, elevation); 
-					result = WS_Copy(ctx->ws, elevation, -1);
-					break;
-				case query_USAGETYPE:
-					result = WS_Copy(ctx->ws, r->usagetype, -1);
-					break;
-				default:
-					result = WS_Copy(ctx->ws, "-", -1);
-					break;
-			}
+	handle = priv->priv;
+	r = IP2Location_get_all(handle, (char *) ip);
 
-			IP2Location_free_record(r);
+	if (r != NULL)
+		return ("????");
 
-			return (result);
-		}
+	switch (option) {
+		case query_COUNTRY_SHORT:
+			result = WS_Copy(ctx->ws, r->country_short, -1);
+			break;
+		case query_COUNTRY_LONG:
+			result = WS_Copy(ctx->ws, r->country_long, -1);
+			break;
+		case query_REGION:
+			result = WS_Copy(ctx->ws, r->region, -1);
+			break;
+		case query_CITY:
+			result = WS_Copy(ctx->ws, r->city, -1);
+			break;
+		case query_ISP:
+			result = WS_Copy(ctx->ws, r->isp, -1);
+			break;
+		case query_LATITUDE:
+			gcvt(r->latitude, 5, latitude) ;
+			result = WS_Copy(ctx->ws, latitude, -1);
+			break;
+		case query_LONGITUDE:
+			gcvt(r->longitude, 5, longitude);
+			result = WS_Copy(ctx->ws, longitude, -1);
+			break;
+		case query_DOMAIN:
+			result = WS_Copy(ctx->ws, r->domain, -1);
+			break;
+		case query_ZIPCODE:
+			result = WS_Copy(ctx->ws, r->zipcode, -1);
+			break;
+		case query_TIMEZONE:
+			result = WS_Copy(ctx->ws, r->timezone, -1);
+			break;
+		case query_NETSPEED:
+			result = WS_Copy(ctx->ws, r->netspeed, -1);
+			break;
+		case query_IDDCODE:
+			result = WS_Copy(ctx->ws, r->iddcode, -1);
+			break;
+		case query_AREACODE:
+			result = WS_Copy(ctx->ws, r->areacode, -1);
+			break;
+		case query_WEATHERSTATIONCODE:
+			result = WS_Copy(ctx->ws, r->weatherstationcode, -1);
+			break;
+		case query_WEATHERSTATIONNAME:
+			result = WS_Copy(ctx->ws, r->weatherstationname, -1);
+			break;
+		case query_MCC:
+			result = WS_Copy(ctx->ws, r->mcc, -1);
+			break;
+		case query_MNC:
+			result = WS_Copy(ctx->ws, r->mnc, -1);
+			break;
+		case query_MOBILEBRAND:
+			result = WS_Copy(ctx->ws, r->mobilebrand, -1);
+			break;
+		case query_ELEVATION:
+			gcvt(r->elevation, 5, elevation);
+			result = WS_Copy(ctx->ws, elevation, -1);
+			break;
+		case query_USAGETYPE:
+			result = WS_Copy(ctx->ws, r->usagetype, -1);
+			break;
+		default:
+			result = WS_Copy(ctx->ws, "-", -1);
+			break;
 	}
 
-	// VMOD_LOG("ERROR: IP2Location database failed to load");
+	IP2Location_free_record(r);
 
-	return WS_Copy(ctx->ws, "????", -1);
+	return (result);
 }
 
 VCL_STRING
