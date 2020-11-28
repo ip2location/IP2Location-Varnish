@@ -1,16 +1,11 @@
-#include <stdlib.h>
-#include <string.h>
-#include <IP2Location.h>
-
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <pthread.h>
-
 #ifdef __FreeBSD__
 #include <stdio.h>
 #define gcvt(v, d, c) sprintf(c, "%*g", d, v);
 #endif
+#include <stdlib.h>
+#include <string.h>
+
+#include <IP2Location.h>
 
 #include "cache/cache.h"
 
