@@ -71,30 +71,32 @@ VPFX(init_db)(VRT_CTX, struct VPFX(priv) *priv, char *filename, char *memtype)
 {
 	CHECK_OBJ_NOTNULL(ctx, VRT_CTX_MAGIC);
 
-	if (priv->priv == NULL) {
-		IP2Location *IP2LocationObj = IP2Location_open((char *) filename);
+	if (priv->priv != NULL)
+		return;
 
-		if (IP2LocationObj == NULL) {
-			printf("Not able to load IP2Location Database \"%s\".\n", (char *) filename);
+	IP2Location *IP2LocationObj = IP2Location_open((char *) filename);
 
-			exit(0);
-		}
+	if (IP2LocationObj == NULL) {
+		printf("Not able to load IP2Location Database \"%s\".\n", (char *) filename);
 
-		printf("IP2Location Database %s is loaded.\n", (char *) filename);
-
-		priv->priv = IP2LocationObj;
-
-		if (strcmp(memtype, "IP2LOCATION_FILE_IO") == 0) {
-			IP2Location_set_lookup_mode(priv->priv, IP2LOCATION_FILE_IO);
-		} else if (strcmp(memtype, "IP2LOCATION_CACHE_MEMORY") == 0) {
-			IP2Location_set_lookup_mode(priv->priv, IP2LOCATION_CACHE_MEMORY);
-		} else if (strcmp(memtype, "IP2LOCATION_SHARED_MEMORY") == 0) {
-			IP2Location_set_lookup_mode(priv->priv, IP2LOCATION_SHARED_MEMORY);
-		}
-
-		AN(priv->priv);
-		priv->free = i2pl_free;
+		exit(0);
 	}
+
+	printf("IP2Location Database %s is loaded.\n", (char *) filename);
+
+	priv->priv = IP2LocationObj;
+
+	if (strcmp(memtype, "IP2LOCATION_FILE_IO") == 0) {
+		IP2Location_set_lookup_mode(priv->priv, IP2LOCATION_FILE_IO);
+	} else if (strcmp(memtype, "IP2LOCATION_CACHE_MEMORY") == 0) {
+		IP2Location_set_lookup_mode(priv->priv, IP2LOCATION_CACHE_MEMORY);
+	} else if (strcmp(memtype, "IP2LOCATION_SHARED_MEMORY") == 0) {
+		IP2Location_set_lookup_mode(priv->priv, IP2LOCATION_SHARED_MEMORY);
+	}
+
+	AN(priv->priv);
+	priv->free = i2pl_free;
+	
 }
 
 // Use this function to query result, and then extract the field based on user selection
@@ -116,7 +118,7 @@ query_all(VRT_CTX, struct VPFX(priv) *priv, char * ip, int option)
 	handle = priv->priv;
 	r = IP2Location_get_all(handle, (char *) ip);
 
-	if (r != NULL)
+	if (r == NULL)
 		return ("????");
 
 	switch (option) {
