@@ -193,162 +193,31 @@ query_all(VRT_CTX, struct VPFX(priv) *priv, char * ip, int option)
 	return (result);
 }
 
-VCL_STRING
-VPFX(country_short)(VRT_CTX, struct VPFX(priv) *priv, char * ip)
-{
-	const char *result = NULL;
-	result = query_all(ctx, priv, ip, query_COUNTRY_SHORT);
-	return (result);
-}
+#define FUNC(UPPER, lower)						\
+	VCL_STRING 							\
+	vmod_ ## lower(VRT_CTX, struct vmod_priv *priv, char * ip)	\
+	{								\
+		return (query_all(ctx, priv, ip, 			\
+		    query_ ## COUNTRY_SHORT));				\
+	}
 
-VCL_STRING
-VPFX(country_long)(VRT_CTX, struct VPFX(priv) *priv, char * ip)
-{
-	const char *result = NULL;
-	result = query_all(ctx, priv, ip, query_COUNTRY_LONG);
-	return (result);
-}
-
-VCL_STRING
-VPFX(region)(VRT_CTX, struct VPFX(priv) *priv, char * ip)
-{
-	const char *result = NULL;
-	result = query_all(ctx, priv, ip, query_REGION);
-	return (result);
-}
-
-VCL_STRING
-VPFX(city)(VRT_CTX, struct VPFX(priv) *priv, char * ip)
-{
-	const char *result = NULL;
-	result = query_all(ctx, priv, ip, query_CITY);
-	return (result);
-}
-
-VCL_STRING
-VPFX(isp)(VRT_CTX, struct VPFX(priv) *priv, char * ip)
-{
-	const char *result = NULL;
-	result = query_all(ctx, priv, ip, query_ISP);
-	return (result);
-}
-
-VCL_STRING
-VPFX(latitude)(VRT_CTX, struct VPFX(priv) *priv, char * ip)
-{
-	const char *result = NULL;
-	result = query_all(ctx, priv, ip, query_LATITUDE);
-	return (result);
-}
-
-VCL_STRING
-VPFX(longitude)(VRT_CTX, struct VPFX(priv) *priv, char * ip)
-{
-	const char *result = NULL;
-	result = query_all(ctx, priv, ip, query_LONGITUDE);
-	return (result);
-}
-
-VCL_STRING
-VPFX(domain)(VRT_CTX, struct VPFX(priv) *priv, char * ip)
-{
-	const char *result = NULL;
-	result = query_all(ctx, priv, ip, query_DOMAIN);
-	return (result);
-}
-
-VCL_STRING
-VPFX(zipcode)(VRT_CTX, struct VPFX(priv) *priv, char * ip)
-{
-	const char *result = NULL;
-	result = query_all(ctx, priv, ip, query_ZIPCODE);
-	return (result);
-}
-
-VCL_STRING
-VPFX(timezone)(VRT_CTX, struct VPFX(priv) *priv, char * ip)
-{
-	const char *result = NULL;
-	result = query_all(ctx, priv, ip, query_TIMEZONE);
-	return (result);
-}
-
-VCL_STRING
-VPFX(netspeed)(VRT_CTX, struct VPFX(priv) *priv, char * ip)
-{
-	const char *result = NULL;
-	result = query_all(ctx, priv, ip, query_NETSPEED);
-	return (result);
-}
-
-VCL_STRING
-VPFX(iddcode)(VRT_CTX, struct VPFX(priv) *priv, char * ip)
-{
-	const char *result = NULL;
-	result = query_all(ctx, priv, ip, query_IDDCODE);
-	return (result);
-}
-
-VCL_STRING
-VPFX(areacode)(VRT_CTX, struct VPFX(priv) *priv, char * ip)
-{
-	const char *result = NULL;
-	result = query_all(ctx, priv, ip, query_AREACODE);
-	return (result);
-}
-
-VCL_STRING
-VPFX(weatherstationcode)(VRT_CTX, struct VPFX(priv) *priv, char * ip)
-{
-	const char *result = NULL;
-	result = query_all(ctx, priv, ip, query_WEATHERSTATIONCODE);
-	return (result);
-}
-
-VCL_STRING
-VPFX(weatherstationname)(VRT_CTX, struct VPFX(priv) *priv, char * ip)
-{
-	const char *result = NULL;
-	result = query_all(ctx, priv, ip, query_WEATHERSTATIONNAME);
-	return (result);
-}
-
-VCL_STRING
-VPFX(mcc)(VRT_CTX, struct VPFX(priv) *priv, char * ip)
-{
-	const char *result = NULL;
-	result = query_all(ctx, priv, ip, query_MCC);
-	return (result);
-}
-
-VCL_STRING
-VPFX(mnc)(VRT_CTX, struct VPFX(priv) *priv, char * ip)
-{
-	const char *result = NULL;
-	result = query_all(ctx, priv, ip, query_MNC);
-	return (result);
-}
-
-VCL_STRING
-VPFX(mobilebrand)(VRT_CTX, struct VPFX(priv) *priv, char * ip)
-{
-	const char *result = NULL;
-	result = query_all(ctx, priv, ip, query_MOBILEBRAND);
-	return (result);
-}
-
-VCL_STRING
-VPFX(elevation)(VRT_CTX, struct VPFX(priv) *priv, char * ip)
-{
-	const char *result = NULL;
-	result = query_all(ctx, priv, ip, query_ELEVATION);
-	return (result);
-}
-
-VCL_STRING
-VPFX(usagetype)(VRT_CTX, struct VPFX(priv) *priv, char * ip)
-{
-	const char *result = NULL;
-	result = query_all(ctx, priv, ip, query_USAGETYPE);
-	return (result);
-}
+FUNC(country_short, COUNTRY_SHORT)
+FUNC(country_long , COUNTRY_LONG);
+FUNC(region, REGION);
+FUNC(city, CITY);
+FUNC(isp, ISP);
+FUNC(latitude, LATITUDE);
+FUNC(longitude, LONGITUDE);
+FUNC(domain, DOMAIN);
+FUNC(zipcode, ZIPCODE);
+FUNC(timezone, TIMEZONE);
+FUNC(netspeed, NETSPEED);
+FUNC(iddcode, IDDCODE);
+FUNC(areacode, AREACODE);
+FUNC(weatherstationcode, WEATHERSTATIONCODE);
+FUNC(weatherstationname, WEATHERSTATIONNAME);
+FUNC(mcc, MCC);
+FUNC(mnc, MNC);
+FUNC(mobilebrand, MOBILEBRAND);
+FUNC(elevation, ELEVATION);
+FUNC(usagetype, USAGETYPE);
