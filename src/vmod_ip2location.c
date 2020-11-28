@@ -104,10 +104,7 @@ query_all(VRT_CTX, struct VPFX(priv) *priv, char * ip, int option)
 	IP2LocationRecord *r;
 	IP2Location *handle;
 	char *result = NULL;
-	
-	char longitude[10];
-	char latitude[10];
-	char elevation[10];
+	char buf[10];
 
 	printf("The client IP is %s.\n", (char *) ip);
 	
@@ -139,12 +136,12 @@ query_all(VRT_CTX, struct VPFX(priv) *priv, char * ip, int option)
 			result = WS_Copy(ctx->ws, r->isp, -1);
 			break;
 		case query_LATITUDE:
-			gcvt(r->latitude, 5, latitude) ;
-			result = WS_Copy(ctx->ws, latitude, -1);
+			gcvt(r->latitude, 5, buf) ;
+			result = WS_Copy(ctx->ws, buf, -1);
 			break;
 		case query_LONGITUDE:
-			gcvt(r->longitude, 5, longitude);
-			result = WS_Copy(ctx->ws, longitude, -1);
+			gcvt(r->longitude, 5, buf);
+			result = WS_Copy(ctx->ws, buf, -1);
 			break;
 		case query_DOMAIN:
 			result = WS_Copy(ctx->ws, r->domain, -1);
@@ -180,8 +177,8 @@ query_all(VRT_CTX, struct VPFX(priv) *priv, char * ip, int option)
 			result = WS_Copy(ctx->ws, r->mobilebrand, -1);
 			break;
 		case query_ELEVATION:
-			gcvt(r->elevation, 5, elevation);
-			result = WS_Copy(ctx->ws, elevation, -1);
+			gcvt(r->elevation, 5, buf);
+			result = WS_Copy(ctx->ws, buf, -1);
 			break;
 		case query_USAGETYPE:
 			result = WS_Copy(ctx->ws, r->usagetype, -1);
