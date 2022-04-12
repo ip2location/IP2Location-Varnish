@@ -13,11 +13,18 @@
 #endif
 
 void
-i2pl_free(void *obj)
+ip2l_free(VRT_CTX, void *obj)
 {
 	AN(obj);
+	CHECK_OBJ_NOTNULL(ctx, VRT_CTX_MAGIC);
 	IP2Location_close((IP2Location *)obj);
 }
+
+static const struct vmod_priv_methods ip2l_methods[1] = {{
+	.magic = VMOD_PRIV_METHODS_MAGIC,
+	.type = "vmod_std_ip2location",
+	.fini = ip2l_free
+}};
 
 VCL_VOID
 vmod_init_db(VRT_CTX, struct vmod_priv *priv, char *filename, char *memtype)
@@ -51,7 +58,7 @@ vmod_init_db(VRT_CTX, struct vmod_priv *priv, char *filename, char *memtype)
 	IP2Location_set_lookup_mode(IP2LocationObj, mtype);
 
 	priv->priv = IP2LocationObj;
-	priv->free = i2pl_free;
+	priv->methods = ip2l_methods;
 }
 
 static VCL_STRING
