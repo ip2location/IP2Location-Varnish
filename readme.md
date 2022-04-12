@@ -114,7 +114,7 @@ Returns two-letter country code based on ISO 3166.
 #### Example
 
 ```c
-set req.http.X-Country-Code = ip2location.country_short(cleipt.ip);
+set req.http.X-Country-Code = ip2location.country_short(client.ip);
 ```
 
 ### country\_long
@@ -124,7 +124,7 @@ Returns country name based on ISO 3166.
 #### Example
 
 ```c
-set req.http.X-Country-Name = ip2location.country_long(cleipt.ip);
+set req.http.X-Country-Name = ip2location.country_long(client.ip);
 ```
 
 ### region 
@@ -134,7 +134,7 @@ Returns region or state name.
 #### Example
 
 ```c
-set req.http.X-Region = ip2location.region(cleipt.ip);
+set req.http.X-Region = ip2location.region(client.ip);
 ```
 
 ### city 
@@ -144,7 +144,7 @@ Returns city name.
 #### Example
 
 ```c
-set req.http.X-City = ip2location.city(cleipt.ip);
+set req.http.X-City = ip2location.city(client.ip);
 ```
 
 ### isp 
@@ -154,7 +154,7 @@ Returns Internet Service Provider or company's name of the IP Address.
 #### Example
 
 ```c
-set req.http.X-ISP = ip2location.isp(cleipt.ip);
+set req.http.X-ISP = ip2location.isp(client.ip);
 ```
 
 ### latitude 
@@ -164,7 +164,7 @@ Returns latitude of the IP Address.
 #### Example
 
 ```c
-set req.http.X-Latitude = ip2location.latitude(cleipt.ip);
+set req.http.X-Latitude = ip2location.latitude(client.ip);
 ```
 
 ### longitude 
@@ -174,7 +174,7 @@ Returns longitude of the IP Address.
 #### Example
 
 ```c
-set req.http.X-Longitude = ip2location.longitude(cleipt.ip);
+set req.http.X-Longitude = ip2location.longitude(client.ip);
 ```
 
 ### domain 
@@ -184,7 +184,7 @@ set req.http.X-Longitude = ip2location.longitude(cleipt.ip);
 #### Example
 
 ```c
-set req.http.X-Domain = ip2location.domain(cleipt.ip);
+set req.http.X-Domain = ip2location.domain(client.ip);
 ```
 
 ### zipcode 
@@ -194,7 +194,7 @@ Returns ZIP/Postal code.
 #### Example
 
 ```c
-set req.http.X-Zipcode = ip2location.zipcode(cleipt.ip);
+set req.http.X-Zipcode = ip2location.zipcode(client.ip);
 ```
 
 ### timezone 
@@ -204,7 +204,7 @@ Returns UTC time zone (with DST supported).
 #### Example
 
 ```c
-set req.http.X-Timezone = ip2location.timezone(cleipt.ip);
+set req.http.X-Timezone = ip2location.timezone(client.ip);
 ```
 
 ### netspeed 
@@ -214,7 +214,7 @@ Returns Internet connection type.
 #### Example
 
 ```c
-set req.http.X-Netspeed = ip2location.netspeed(cleipt.ip);
+set req.http.X-Netspeed = ip2location.netspeed(client.ip);
 ```
 
 ### iddcode 
@@ -224,7 +224,7 @@ Returns IDD prefix.
 #### Example
 
 ```c
-set req.http.X-Iddcode = ip2location.iddcode(cleipt.ip);
+set req.http.X-Iddcode = ip2location.iddcode(client.ip);
 ```
 
 ### areacode 
@@ -234,7 +234,7 @@ Returns Area Code of the IP Address.
 #### Example
 
 ```c
-set req.http.X-Areacode = ip2location.areacode(cleipt.ip);
+set req.http.X-Areacode = ip2location.areacode(client.ip);
 ```
 
 ### weatherstationcode 
@@ -244,7 +244,7 @@ Returns code to identify the nearest weather observation station
 #### Example
 
 ```c
-set req.http.X-Weatherstationcode = ip2location.weatherstationcode(cleipt.ip);
+set req.http.X-Weatherstationcode = ip2location.weatherstationcode(client.ip);
 ```
 
 ### weatherstationname 
@@ -254,7 +254,7 @@ Returns  name of the nearest weather observation st#### Example
 #### Example
 
 ```c
-set req.http.X-Weatherstationname = ip2location.weatherstationname(cleipt.ip);
+set req.http.X-Weatherstationname = ip2location.weatherstationname(client.ip);
 ```
 
 ### mcc 
@@ -264,7 +264,7 @@ Returns Mobile Country #### ExampleMCC).
 #### Example
 
 ```c
-set req.http.X-MCC = ip2location.mcc(cleipt.ip);
+set req.http.X-MCC = ip2location.mcc(client.ip);
 ```
 
 ### mnc 
@@ -274,7 +274,7 @@ Returns Mobile Ne#### Exampleode (MNC).
 #### Example
 
 ```c
-set req.http.X-MNC = ip2location.mnc(cleipt.ip);
+set req.http.X-MNC = ip2location.mnc(client.ip);
 ```
 
 ### mobilebrand 
@@ -284,7 +284,7 @@ set req.http.X-MNC = ip2location.mnc(cleipt.ip);
 #### Example
 
 ```c
-set req.http.X-Mobilebrand = ip2location.mobilebrand(cleipt.ip);
+set req.http.X-Mobilebrand = ip2location.mobilebrand(client.ip);
 ```
 
 ### elevation 
@@ -294,7 +294,7 @@ Return elevation in meters (m).
 #### Example
 
 ```c
-set req.http.X-Elevation = ip2location.elevation(cleipt.ip);
+set req.http.X-Elevation = ip2location.elevation(client.ip);
 ```
 
 ### usagetype 
@@ -304,7 +304,7 @@ set req.http.X-Elevation = ip2location.elevation(cleipt.ip);
 #### Example
 
 ```c
-set req.http.X-Usagetype = ip2location.usagetype(cleipt.ip);
+set req.http.X-Usagetype = ip2location.usagetype(client.ip);
 ```
 
 
