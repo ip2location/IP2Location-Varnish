@@ -76,7 +76,7 @@ convert(VRT_CTX, float f)
 {
 	char buf[10];
 
-	gcvt(f, 5, buf);
+	(void)! gcvt(f, 5, buf);
 	return (copy(ctx, buf));
 }
 

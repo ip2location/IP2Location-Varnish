@@ -1,5 +1,5 @@
 AC_PREREQ(2.64)
-AC_INIT([IP2Location-Varnish], [1.0.0], [support@ip2location.com], [IP2Location-Varnish])
+AC_INIT([IP2Location-Varnish], [1.0.4], [support@ip2location.com], [IP2Location-Varnish])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CONFIG_SRCDIR(src/vmod_ip2location.vcc)
 AM_CONFIG_HEADER(config.h)
