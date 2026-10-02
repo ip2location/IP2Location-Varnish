@@ -25,7 +25,8 @@ Makefile.in
 /missing
 /stamp-h1
 
-/src/vcc_if.c
-/src/vcc_if.h
+/src/vcc_ip2location_if.c
+/src/vcc_ip2location_if.h
+/src/vmod_vcs_version.txt
 /src/*.rst
 /m4

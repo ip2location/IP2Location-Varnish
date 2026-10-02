@@ -9,7 +9,7 @@
 
 An Varnish module that enables the website or server admins to find the country, region, city, latitude, longitude, zip code, time zone, ISP, domain name, connection type, area code, weather, mobile network, elevation, usage type by IP address. The module reads the geo location information from **IP2Location BIN data** file. 
 
-This module currently only support Varnish version 6.5 and above.
+This module supports Varnish Cache 6.6 or later and Vinyl Cache 9.1 or later.
 
 Required [IP2Location C Library](https://github.com/chrislim2888/IP2Location-C-Library) to work.
 
@@ -21,15 +21,16 @@ Before install and use this module, you have to install:
 
 - IP2Location C Library. You can get IP2Location C Library from <https://github.com/chrislim2888/IP2Location-C-Library> 
 
-- varnish-dev and docutils-common packages. Install the require packages using following command:
+- The development package for your cache (varnish-dev for Varnish Cache, or vinyl-cache-dev for Vinyl Cache) and docutils-common. For example:
 
   ```bash
-  apt-get install -y varnish-dev docutils-common autoconf libtool make
+  apt-get install -y varnish-dev docutils-common autoconf libtool make       # Varnish Cache
+  apt-get install -y vinyl-cache-dev docutils-common autoconf libtool make   # Vinyl Cache
   ```
 
   
 
-- And of course, the **Varnish**.
+- And of course, **Varnish Cache** or **Vinyl Cache** itself.
 
 Then, clone this repo into your local, and run following commands to install:
 
@@ -39,6 +40,8 @@ Then, clone this repo into your local, and run following commands to install:
 make
 make install
 ```
+
+If both Varnish Cache and Vinyl Cache are installed, Vinyl Cache is used by default. To build against Varnish Cache instead, run `./configure --with-vcache=varnish`.
 
 
 
