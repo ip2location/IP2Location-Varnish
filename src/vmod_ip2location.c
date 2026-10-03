@@ -46,8 +46,11 @@ vmod_init_db(VRT_CTX, struct vmod_priv *priv, char *filename, char *memtype)
 		return;
 	}
 
-	if (priv->priv != NULL)
-		IP2Location_close((IP2Location *)priv->priv);;
+	if (priv->priv != NULL) {
+		IP2Location_close((IP2Location *)priv->priv);
+		/* Don't leave a dangling handle behind if the open below fails. */
+		priv->priv = NULL;
+	}
 
 	IP2Location *IP2LocationObj = IP2Location_open(filename);
 	if (!IP2LocationObj) {
