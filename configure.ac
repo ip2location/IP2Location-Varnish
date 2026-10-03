@@ -42,13 +42,26 @@ if test "x$PYTHON" = "xno"; then
 	AC_MSG_ERROR([Python > 2.5 is needed to build this vmod, please install Python 2.6 or greater.])
 fi
 
-VARNISH_VMOD_INCLUDES
-VARNISH_VMOD_DIR
-VARNISH_VMODTOOL
-
-AC_PATH_PROG([VARNISHTEST], [varnishtest])
-AC_PATH_PROG([VARNISHD], [varnishd], [],
-    [$PATH:$PATH:`pkg-config varnishapi --variable=sbindir`])
+# Vinyl Cache 9.1 (and other VCache flavors that adopt its build macros)
+# ship VCACHE_REQUIRE in their m4 files. Older Varnish Cache releases only
+# provide the VARNISH_* macros, so fall back to those when it is missing.
+# Varnish Cache 6.6 is the minimum because of the vmod_priv_methods API.
+m4_ifdef([VCACHE_REQUIRE], [
+	VCACHE_REQUIRE(
+		[[vinyl], [9.1.0]],
+		[[varnish], [6.6.0]],
+	)
+	VCACHE_VMODS([ip2location])
+	VMOD_CFLAGS="$VCACHEAPI_CFLAGS"
+	VMOD_DATAROOTDIR="$VCACHEAPI_DATAROOTDIR"
+], [
+	VARNISH_PREREQ([6.6.0])
+	VARNISH_VMODS([ip2location])
+	VMOD_CFLAGS="$VARNISHAPI_CFLAGS"
+	VMOD_DATAROOTDIR="$VARNISHAPI_DATAROOTDIR"
+])
+AC_SUBST([VMOD_CFLAGS])
+AC_SUBST([VMOD_DATAROOTDIR])
 
 AC_CONFIG_FILES([
 	Makefile

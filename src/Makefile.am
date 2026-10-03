@@ -1,20 +1,20 @@
-AM_CPPFLAGS = @VMOD_INCLUDES@
+AM_CPPFLAGS = $(VMOD_CFLAGS)
 AM_CFLAGS = -Wall -Wextra -Werror
 
-vmoddir = @VMOD_DIR@
 vmod_LTLIBRARIES = libvmod_ip2location.la
 
-libvmod_ip2location_la_LDFLAGS = -module -export-dynamic -avoid-version -shared \
-	-lIP2Location
+libvmod_ip2location_la_LDFLAGS = $(VMOD_LDFLAGS)
+libvmod_ip2location_la_LIBADD = -lIP2Location
 
 libvmod_ip2location_la_SOURCES = \
-	vcc_if.c \
-	vcc_if.h \
 	vmod_ip2location.c
 
-vcc_if.c vcc_if.h: @VMODTOOL@ $(top_srcdir)/src/vmod_ip2location.vcc
-	@VMODTOOL@ $(top_srcdir)/src/vmod_ip2location.vcc
+nodist_libvmod_ip2location_la_SOURCES = \
+	vcc_ip2location_if.c \
+	vcc_ip2location_if.h
+
+@BUILD_VMOD_IP2LOCATION@
 
 EXTRA_DIST = vmod_ip2location.vcc
 
-CLEANFILES = $(builddir)/vcc_if.c $(builddir)/vcc_if.h
+DISTCLEANFILES = vmod_vcs_version.txt
